@@ -1,33 +1,122 @@
-import { useMemo, useState } from "react"
+import { useState, useMemo } from "react";
 
 const App = () => {
+  const [count, setCount] = useState(0);
+  const [input, setInput] = useState();
 
-  const [add, setadd] = useState(0);
-   const [sub, setsub] = useState(99)
+  const expensiveTask = (num) => {
+    console.log("Inside Expensive Task");
 
- const product = useMemo(() => {      // befaltu ka render na ho isliye useMemo ka use krte h
-  console.log("product function called!");
-  
-  return add*2;
- },[add]);  //  ye ek dependency array h  means jv add m change ho tbhi ye fuction run kro 
+    for (let i = 0; i < 1000000; i++) {}    // expensive operation 
+
+    return num * 2;
+  };
+
+  const doubleValue = useMemo(   // Calculate expensiveTask(input) and remember the result. Recalculate only when input changes.
+    () => expensiveTask(input),
+    [input]            // "Run the calculation again when input changes."
+  );
 
   return (
-    <div className=" py-10 px-[10%] bg-gray-800 h-screen w-screen text-white font-thin">
+    <div className="min-h-screen bg-gray-100 flex items-center justify-center">
 
-      <h1 className="text-6xl mt-10 mb-5">{product}</h1>
+      <div className="w-[420px] bg-white rounded-xl shadow-md p-6">
 
-      <div>
-         <button onClick={() => setadd(add+1)} className="font-black p-2 bg-pink-400 text-5xl">+</button>
-         <span className="text-5xl ml-5 font-black">{add}</span>
-         <br/>
-         <br/>
+        {/* Heading */}
+        <h1 className="text-2xl font-semibold text-gray-800">
+          useMemo Example
+        </h1>
 
-      <button onClick={() => setsub(sub-1)} className="font-black p-2 bg-red-600 text-5xl">-</button>
-      <span className="text-5xl ml-5 font-black">{sub}</span>
+        <p className="text-gray-500 text-sm mt-1 mb-6">
+          Understanding memoization in React
+        </p>
+
+
+        {/* Counter */}
+        <div className="border rounded-lg p-4 mb-5">
+
+          <div className="flex items-center justify-between">
+
+            <div>
+              <p className="text-sm text-gray-500">
+                Counter
+              </p>
+
+              <p className="text-2xl font-semibold text-gray-800">
+                {count}
+              </p>
+            </div>
+
+            <button
+              onClick={() => setCount(count + 1)}
+              className="bg-blue-600 hover:bg-blue-700
+                         text-white px-4 py-2
+                         rounded-lg transition"
+            >
+              Increment
+            </button>
+
+          </div>
+
+        </div>
+
+
+        {/* Input */}
+        <div className="mb-5">
+
+          <label className="block text-sm font-medium text-gray-700 mb-2">
+            Enter a number
+          </label>
+
+          <input
+            type="number"
+            value={input}     // displays the state value in the input box.
+            onChange={(e) => setInput((e.target.value))}    // Whenever I type something in the input box, take what I typed and save it in input.
+            placeholder="Enter number"
+            className="w-full border border-gray-300
+                       rounded-lg px-3 py-2
+                       outline-none
+                       focus:border-blue-500"
+          />
+
+        </div>
+
+
+        {/* Result */}
+        <div className="bg-gray-50 border rounded-lg p-4">
+
+          <p className="text-sm text-gray-500">
+            Double Value
+          </p>
+
+          <p className="text-3xl font-semibold text-blue-600 mt-1">
+            {doubleValue}
+          </p>
+
+        </div>
+
+
+        {/* Explanation */}
+        <div className="mt-5 text-sm text-gray-500 leading-5">
+
+          <p>
+            <span className="font-semibold text-gray-700">
+              useMemo
+            </span>{" "}
+            remembers the result of the expensive calculation.
+          </p>
+
+          <p className="mt-2">
+            Changing the counter does not run the calculation again.
+            Changing the input does.
+          </p>
+
+        </div>
+
       </div>
 
     </div>
-  )
-}
+  );
+};
 
-export default App
+export default App;
